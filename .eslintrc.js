@@ -10,7 +10,9 @@ module.exports = {
     'standard',
     'plugin:prettier/recommended',
     'plugin:node/recommended',
-    'plugin:@next/next/recommended'
+    'plugin:@next/next/recommended',
+    'next/core-web-vitals',
+    'plugin:import/recommended'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -27,6 +29,13 @@ module.exports = {
         singleQuote: true,
         semi: false,
         trailingComma: 'none'
+      }
+    ],
+    'node/no-missing-import': [
+      'error',
+      {
+        allowModules: [],
+        tryExtensions: ['.js', '.jsx', '.ts', '.tsx']
       }
     ]
   }

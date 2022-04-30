@@ -10,7 +10,12 @@ const Home: NextPage = () => {
       <MintModal {...{ opened, setOpened }} />
 
       <button onClick={() => setOpened(true)}>
-        <Image src={'/images/coin-slot.svg'} width={500} height={500}></Image>
+        <Image
+          alt="Coin Slot Machine"
+          src={'/images/coin-slot.svg'}
+          width={500}
+          height={500}
+        ></Image>
       </button>
     </div>
   )

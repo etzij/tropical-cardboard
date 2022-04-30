@@ -1,5 +1,5 @@
 import { Button, Modal } from '@mantine/core'
-import { useState, FC, Dispatch, SetStateAction } from 'react'
+import { FC, Dispatch, SetStateAction } from 'react'
 
 interface ModalState {
   opened: boolean

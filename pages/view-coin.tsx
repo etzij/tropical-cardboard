@@ -6,6 +6,7 @@ const ViewCoin: NextPage = () => {
     <div className="flex justify-center items-center h-screen">
       <div className="flex flex-col justify-center">
         <Image
+          alt="Front of Coin"
           id="coin-front"
           src={'/images/coin-front.png'}
           width={500}
@@ -17,6 +18,7 @@ const ViewCoin: NextPage = () => {
       </div>
       <div className="flex flex-col justify-center">
         <Image
+          alt="Back of Coin"
           id="coin-back"
           src={'/images/coin-back.png'}
           width={500}
