@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const Home: NextPage = () => {
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useState<boolean>(false)
   return (
     <>
       <nav className="flex flex-row p-5">
