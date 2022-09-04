@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx hardhat compile && next build",
     "start": "next start",
     "lint": "next lint",
-    "type-coverage": "type-coverage --detail"
+    "type-coverage": "type-coverage --detail",
+    "remix": "remixd"
   },
   "dependencies": {
     "@mantine/core": "^4.2.1",
@@ -16,6 +17,7 @@
     "@mantine/modals": "^4.2.1",
     "@mantine/next": "^4.2.1",
     "@mantine/spotlight": "^4.2.1",
+    "@tabler/icons": "^1.78.1",
     "next": "12.1.5",
     "react": "18.1.0",
     "react-dom": "18.1.0",
@@ -27,6 +29,7 @@
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "@openzeppelin/contracts": "^4.6.0",
+    "@remix-project/remixd": "^0.6.5",
     "@typechain/ethers-v5": "^7.0.1",
     "@typechain/hardhat": "^2.3.0",
     "@types/chai": "^4.2.21",

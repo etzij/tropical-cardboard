@@ -1,9 +1,10 @@
-import type { NextPage } from 'next'
-import Image from 'next/image'
+import { Center } from '@mantine/core';
+import type { NextPage } from 'next';
+import Image from 'next/image';
 
 const ViewCoin: NextPage = () => {
   return (
-    <div className="flex justify-center items-center h-screen">
+    <Center>
       <div className="flex flex-col justify-center">
         <Image
           alt="Front of Coin"
@@ -28,8 +29,8 @@ const ViewCoin: NextPage = () => {
           Back
         </label>
       </div>
-    </div>
-  )
-}
+    </Center>
+  );
+};
 
-export default ViewCoin
+export default ViewCoin;

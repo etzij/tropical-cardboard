@@ -1,10 +1,11 @@
-import { Button, Modal } from '@mantine/core'
-import { FC, Dispatch, SetStateAction } from 'react'
-import WalletBalance from './WalletBalance'
+import { Button, Modal } from '@mantine/core';
+import { FC, Dispatch, SetStateAction } from 'react';
+import TropicalCardboardMint from './TropicalCardboardMint';
+import WalletBalance from './WalletBalance';
 
 interface ModalState {
-  opened: boolean
-  setOpened: Dispatch<SetStateAction<boolean>>
+  opened: boolean;
+  setOpened: Dispatch<SetStateAction<boolean>>;
 }
 
 const MintModal: FC<ModalState> = ({ opened, setOpened }) => {
@@ -20,13 +21,13 @@ const MintModal: FC<ModalState> = ({ opened, setOpened }) => {
         title="5 Matic"
       >
         <div className="flex flex-row gap-4 justify-center">
-          <Button variant="outline">Mint</Button>
+          <TropicalCardboardMint />
           <Button variant="outline">Connect Wallet</Button>
         </div>
         <WalletBalance />
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default MintModal
+export default MintModal;
