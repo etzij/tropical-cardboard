@@ -18,7 +18,7 @@ const MintModal: FC<ModalState> = ({ opened, setOpened }) => {
         centered
         opened={opened}
         onClose={() => setOpened(false)}
-        title="5 Matic"
+        title="0.005 Ethereum"
       >
         <div className="flex flex-row gap-4 justify-center">
           <TropicalCardboardMint />

@@ -1,8 +1,8 @@
 import { Center } from '@mantine/core';
-import type { NextPage } from 'next';
 import Image from 'next/image';
+import { FC } from 'react';
 
-const ViewCoin: NextPage = () => {
+const ViewCoin: FC = () => {
   return (
     <Center>
       <div className="flex flex-col justify-center">
