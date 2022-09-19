@@ -22,6 +22,10 @@ contract SodaPhones is ERC721, ERC721URIStorage, Ownable {
         return "https://ipfs.io/ipfs/QmUwf8PDyrYo9BisiL3LQqHDSMtyZk9jqBx4dsyeMU7Lh3/";
     }
 
+    function setPartnerContractAddress(address partner) public{
+        TROPICAL_CARDBOARD_COIN_ADDRESS = partner;
+    }
+
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
@@ -34,6 +38,10 @@ contract SodaPhones is ERC721, ERC721URIStorage, Ownable {
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
+
+    //--> Burn wird nie aufgerufen bzw. wird nach dem deployment nicht benutzt werden können. Soll das so sein ?
+
+
 
     function tokenURI(uint256 tokenId)
         public
@@ -56,7 +64,7 @@ contract SodaPhones is ERC721, ERC721URIStorage, Ownable {
         uint256 tropCardboardBalance = tcc.getBalance(recipient);
 
         // Must be an owner of TropicalCarboardCoin
-        require(tropCardboardBalance >= 1);
+        require(tropCardboardBalance >= 1, "Must be an owner of TropicalCarboardCoin");
         // Supply must not be exceeded
         require(existingURIs[metadataURI] <= 10, "Max supply reached!");
         // Sender must send payment
@@ -75,4 +83,7 @@ contract SodaPhones is ERC721, ERC721URIStorage, Ownable {
         return newItemId;
     }
 
+    //Konstruktor mit name, symbol, maxNFT Supply fehlt und salestart, wenn gewollt
+    //Eine Funktion um das eingzahlte Geld rauszuziehen
+    //Verheiratung hardgecoded!!!! kann man mit setter funktion und OnlyOwner Lösen
 }

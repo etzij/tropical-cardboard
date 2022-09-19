@@ -42,10 +42,10 @@ contract TropicalCardboardCoin is ERC1155, Ownable, ERC1155Burnable {
         uint256 id,
         uint256 amount
     ) public override virtual {
-        require(
-            account == _msgSender(),
-            "ERC1155: caller is not owner"
-        );
+        //require(
+         //   account == _msgSender(),  //kann im zusammenhang mit dem anderen COntract nicht durchgehen da der msg.sender immer der andere Contract ist
+          //  "ERC1155: caller is not owner"
+        //);
 
         _burn(account, id, amount);
         totalSupply -= amount;
@@ -58,6 +58,9 @@ contract TropicalCardboardCoin is ERC1155, Ownable, ERC1155Burnable {
     function getBalance(address account) public view returns (uint256) {
         return balanceOf(account, 0);
     }
+
+
+
 
     function payToMint(
         address account,
@@ -72,3 +75,4 @@ contract TropicalCardboardCoin is ERC1155, Ownable, ERC1155Burnable {
         totalSupply += amount;
     }
 }
+//Eine Funktion um das eingzahlte Geld rauszuziehen

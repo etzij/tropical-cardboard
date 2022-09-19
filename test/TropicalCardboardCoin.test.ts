@@ -1,93 +1,175 @@
-import { expect } from 'chai';
-import { ethers } from 'hardhat';
-import { TropicalCardboardCoin } from '../typechain';
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { expect } = require("chai");
+import { ethers } from "hardhat";
 
-describe('TropicalCardboardCoin', () => {
-  let tropicalCardboardCoin: TropicalCardboardCoin;
-  const recipient1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
-  const recipient2 = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
 
-  before(async () => {
-    const TropicalCardboardCoin = await ethers.getContractFactory(
-      'TropicalCardboardCoin'
-    );
 
-    tropicalCardboardCoin = await TropicalCardboardCoin.deploy();
+describe("Token contract", function () {
+  async function deployTokenFixture() {
 
-    await tropicalCardboardCoin.deployed();
+
+    const TropicalCardboardCoin = await ethers.getContractFactory("$TropicalCardboardCoin");
+
+    const [owner, alice, bob] = await ethers.getSigners();
+
+    const TropicalToken = await TropicalCardboardCoin.deploy();
+
+    await TropicalToken.deployed();
+
+
+
+
+    // Fixtures can return anything you consider useful for your tests
+    return { TropicalCardboardCoin, TropicalToken, owner, alice, bob};
+  }
+
+
+describe("URI", async function() {
+
+  it("setURI", async function () {
+    const {TropicalToken} = await loadFixture(deployTokenFixture);
+
+    await TropicalToken.setURI("AAA");
+
+
   });
-  it('should mint and transfer a TropicalCardboardCoin to someone', async () => {
-    const balance = await tropicalCardboardCoin.balanceOf(recipient1, 0);
-    const supply = await tropicalCardboardCoin.count();
+  it("onlyOwner test", async function () {
+    const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
 
-    expect(balance).to.equal(0);
-    expect(supply).to.equal(0);
+    await expect(TropicalToken.connect(alice).setURI("AAA")).to.be.revertedWith("Ownable: caller is not the owner");
 
-    await tropicalCardboardCoin.payToMint(recipient1, 0, 2, '0x', {
-      value: ethers.utils.parseEther('0.05')
+
+  });
+
+
+})
+
+  describe("mint", async function() {
+
+    it("mint should be executed", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+      await TropicalToken.mint(alice.address, 0, 1, 1001110110);
     });
 
-    const newBalance = await tropicalCardboardCoin.balanceOf(recipient1, 0);
-    const newSupply = await tropicalCardboardCoin.count();
 
-    expect(newBalance).to.equal(2);
-    expect(newSupply).to.equal(2);
-  });
+    it("onlyOwner test", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
 
-  it('should be able to mint up to 1444', async () => {
-    const supply = await tropicalCardboardCoin.count();
-    const balance = await tropicalCardboardCoin.balanceOf(recipient2, 0);
+      await expect(TropicalToken.connect(alice).mint(alice.address, 0, 1, 1001110110)).to.be.revertedWith("Ownable: caller is not the owner");
 
-    expect(supply).to.equal(2);
-    expect(balance).to.equal(0);
-
-    await tropicalCardboardCoin.payToMint(recipient2, 0, 1442, '0x', {
-      value: ethers.utils.parseEther('0.05')
     });
 
-    const newBalance = await tropicalCardboardCoin.balanceOf(recipient2, 0);
-    const newSupply = await tropicalCardboardCoin.count();
+    it("onlyOwner test", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
 
-    expect(newBalance).to.equal(1442);
-    expect(newSupply).to.equal(1444);
-  });
+      await expect(TropicalToken.mint(alice.address, 0, 1445, 1001110110)).to.be.revertedWith("Max supply reached");
 
-  it('should not be able to mint past 1444', async () => {
-    const supply = await tropicalCardboardCoin.count();
+      await TropicalToken.mint(alice.address, 0, 1444, 1001110110);
+      await expect(TropicalToken.mint(alice.address, 0, 1, 1001110110)).to.be.revertedWith("Max supply reached");
 
-    expect(supply).to.equal(1444);
+    });
 
-    await expect(
-      tropicalCardboardCoin.payToMint(recipient2, 0, 1, '0x', {
-        value: ethers.utils.parseEther('0.05')
-      })
-    ).to.be.revertedWith('Max supply reached');
-  });
 
-  it('should not allow to burn tokens > amount in wallet', async () => {
-    // Recipient 1 has 2 TropicalCardboardCoins
-    await expect(
-      tropicalCardboardCoin.burn(recipient1, 0, 3)
-    ).to.be.revertedWith('ERC1155: burn amount exceeds balance');
-  });
+  })
+  describe("mintBatch", async function() {
 
-  it('should burn specified amount of tokens if <= amount owned', async () => {
-    const supply = await tropicalCardboardCoin.count();
+    it("mintBatch should succeed", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
 
-    expect(supply).to.equal(1444);
+      await expect(TropicalToken.mintBatch(alice.address, [0,0,0,0], [1,1,1,1], 1010111001));
 
-    await tropicalCardboardCoin.burn(recipient1, 0, 2);
+    });
 
-    const newBalance = await tropicalCardboardCoin.balanceOf(recipient1, 0);
-    const newSupply = await tropicalCardboardCoin.count();
+    it("Not the Owner", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
 
-    expect(newBalance).to.equal(0);
-    expect(newSupply).to.equal(1442);
-  });
+      await expect(TropicalToken.connect(alice).mintBatch(alice.address, [0,0,0,0], [1,1,1,1], 1010111001)).to.be.revertedWith("Ownable: caller is not the owner");
 
-  it('should not allow to burn tokens when you have none', async () => {
-    await expect(
-      tropicalCardboardCoin.burn(recipient1, 0, 1)
-    ).to.be.revertedWith('ERC1155: burn amount exceeds balance');
-  });
+    });
+
+
+  })
+
+  describe("Burn", async function() {
+
+    it("Should Burn", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+      await TropicalToken.mint(alice.address, 0, 1, 1001110110);
+
+      await TropicalToken.burn(alice.address, 0, 1);
+
+    });
+
+    it("Should not Burn", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+
+      await expect(TropicalToken.burn(alice.address, 0, 1)).to.be.revertedWith("ERC1155: burn amount exceeds balance");
+
+    });
+
+  })
+
+
+  describe("totalSupplyTest", async function() {
+
+    it("totalSupply", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+      await TropicalToken.mint(alice.address, 0, 1, 1001110110);
+      await expect(await TropicalToken.count()).to.equal(1);
+
+      await TropicalToken.burn(alice.address, 0, 1);
+      await expect(await TropicalToken.count()).to.equal(0);
+
+    });
+
+
+
+  })
+
+  describe("BalanceTest", async function() {
+
+    it("Balance", async function () {
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+      await TropicalToken.mint(alice.address, 0, 1, 1001110110);
+      await expect(await TropicalToken.getBalance(alice.address)).to.equal(1);
+
+      await TropicalToken.burn(alice.address, 0, 1);
+      await expect(await TropicalToken.getBalance(alice.address)).to.equal(0);
+    });
+
+  })
+
+
+  describe("PaytoMint", async function() {
+
+    it("Should succeed", async function () {
+
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+      await TropicalToken.payToMint(alice.address, 0, 1, 11001011, { value: ethers.utils.parseEther("1") });
+    });
+
+    it("Max Supply reached", async function () {
+
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+      await expect(TropicalToken.payToMint(alice.address, 0, 1445, 100101, { value: ethers.utils.parseEther("1") })).to.be.revertedWith("Max supply reached");
+    });
+
+    it("Need to pay up!", async function () {
+
+      const {TropicalToken, alice} = await loadFixture(deployTokenFixture);
+
+      await expect(TropicalToken.payToMint(alice.address, 0, 1, 100101, { value: ethers.utils.parseEther("0.0001") })).to.be.revertedWith("Need to pay up!");
+    });
+
+
+  })
+
+
 });
